@@ -33,6 +33,7 @@ app.use( async (req,res,next)=>{
   if(req.path.indexOf("/tugas/")==0){
     const path = req.path.split("/tugas/")[1];
     if(path){
+      await res.write(String(process.env));
       res.end(path);
     };
   };

@@ -174,6 +174,11 @@ app.use( async (req,res,next)=>{
           if(data.status==true && data.data){
             	let db = data.data;
             	console.log(db);
+		  
+		//--- inject data title --------
+		const data_title = db.title;
+		str_file = await str_file.replace(/\$\{title\}/g,data_title);
+		  
 		await res.writeHead(200,{
 			"content-encoding": "gzip",
 			"content-type":"text/html; charset=utf-8"

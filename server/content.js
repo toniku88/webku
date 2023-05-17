@@ -9,7 +9,6 @@ const { gzip, ungzip} = nodeGzip;
 const app = express();
 
 app.use( async (req,res,next)=>{
-  console.log(req)
   res.end(req.url);
 });
 

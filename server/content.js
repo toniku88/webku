@@ -322,6 +322,36 @@ app.use( async (req,res,next)=>{
 		//--- inject data commentCount --------
 		let data_commentCount = db.comment.length;
 		str_file = await str_file.replace(/\$\{commentCount\}/g,data_commentCount);
+		  
+		//--- inject data comment --------
+		let data_comment = "";
+		let timeDate = new Date().getTime();
+		try{
+			timeDate = moment(comment.date).format('L');
+		}catch(e){
+			timeDate = moment(timeDate).format('L');
+		};
+		for(let comment of db.comment){
+			data_comment+=`<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+								    <div class="d-flex w-100 justify-content-between">
+								      <h4 class="mb-1 fs-12"><i class="bi bi-chat-dots mr-1"></i>Dikomentari Oleh <span class="badge badge-info fs-15">`+comment.author+`</span></h5>
+								    </div>
+								    <div class="mb-1">`+comment.text+`</div>
+								    <small class="text-muted fs-12"><i class="bi bi-clock mr-1"></i>`+timeDate+`</small>
+								  </a>`;
+		};
+		str_file = await str_file.replace(/\$\{comment\}/g,data_comment);
+
+		//--- inject data author --------
+		let data_authorName = db.author.name;
+		str_file = await str_file.replace(/\$\{authorName\}/g,data_authorName);
+
+		//--- inject data category --------
+		let data_category = "";
+		for(let tag of db.tag){
+			data_category+=`<span class="badge bg-light text-dark mr-1"><i class="bi bi-tag mr-1"></i>`+tag.name+`</span>`;
+		};
+		str_file = await str_file.replace(/\$\{category\}/g,data_category);
 		
 		await res.writeHead(200,{
 			"content-encoding": "gzip",

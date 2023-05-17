@@ -275,11 +275,14 @@ app.use( async (req,res,next)=>{
 		await res.write(str_file);
 		return res.end();
           };
-        }catch(e){};
+        }catch(e){
+		return next(e);
+	};
       };
     };
+  }else{
+  	return next();
   };
-  return next();
 });
 
 export default app;

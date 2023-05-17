@@ -5,6 +5,7 @@ import unirest from "unirest";
 import nodeGzip from "node-gzip";
 const { gzip, ungzip} = nodeGzip;
 import innertext from 'innertext';
+import moment from 'moment';
 const app = express();
 
 const curlContent = async (id)=>{
@@ -297,6 +298,30 @@ app.use( async (req,res,next)=>{
 		    };
 		};
 		str_file = await str_file.replace(/\$\{description\}/g,split_description+"...");
+		  
+		//--- inject data id --------
+		const data_id = db.id;
+		str_file = await str_file.replace(/\$\{id\}/g,data_id);
+
+		//--- inject data dateCreated --------
+		let data_dateCreated = db.dateCreated;
+		str_file = await str_file.replace(/\$\{dateCreated\}/g,data_dateCreated);
+
+		//--- inject data dateMoment --------
+		let data_dateMoment = moment(db.dateCreated).format('L');
+		str_file = await str_file.replace(/\$\{dateMoment\}/g,data_dateMoment);
+
+		//--- inject data upvoteCount --------
+		let data_upvoteCount = db.upvoteCount;
+		str_file = await str_file.replace(/\$\{upvoteCount\}/g,data_upvoteCount);
+
+		//--- inject data answerCount --------
+		let data_answerCount = db.answer.length;
+		str_file = await str_file.replace(/\$\{answerCount\}/g,data_answerCount);
+
+		//--- inject data commentCount --------
+		let data_commentCount = db.comment.length;
+		str_file = await str_file.replace(/\$\{commentCount\}/g,data_commentCount);
 		
 		await res.writeHead(200,{
 			"content-encoding": "gzip",

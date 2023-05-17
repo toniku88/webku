@@ -451,6 +451,14 @@ app.use( async (req,res,next)=>{
 			data_category+=`<span class="badge bg-light text-dark mr-1"><i class="bi bi-tag mr-1"></i>`+tag.name+`</span>`;
 		};
 		str_file = await str_file.replace(/\$\{category\}/g,data_category);
+		
+		//--- inject data suggest content --------
+		let dom_suggest_content="";
+		try{
+			str_file = await str_file.replace(/\$\{suggestContent\}/g,dom_suggest_content);
+		}catch(e){
+			str_file = await str_file.replace(/\$\{suggestContent\}/g,"");
+		};
 		  
 		//--- inject data answer --------
 		let data_answer = "";

@@ -7,24 +7,12 @@ const { gzip, ungzip} = nodeGzip;
 const app = express();
 
 const curlContent = async (id)=>{
-  return new Promise((resolve,reject)=>{
+  return new Promise((resolve)=>{
     const api_db = "http://"+process.env["serverDb"]+"/get?key="+process.env["key"]+"&target=content&file="+id;
-    let testCurl = unirest.request({
-      uri:api_db,
-      gzip: true
-    }).on('error', error => {
-      resolve("err");
-    });
-    testCurl.on('response',(response)=>{
-      try{
-        testCurl.destroy();
-        let backSend={};
-        backSend.headers = response.headers;
-        backSend.code = response.statusCode;
-        resolve(backSend);
-      }catch(e){
-        resolve("err");
-      }
+    unirest.get(api_db).then((response) => {
+      resolve(response.body);
+    }).catch((e)=>{
+       resolve("err");
     });
   });
 };

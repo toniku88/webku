@@ -273,6 +273,31 @@ app.use( async (req,res,next)=>{
 		const data_title = db.title;
 		str_file = await str_file.replace(/\$\{title\}/g,data_title);
 		  
+		//--- inject data content --------
+		//-- remove element <a> but not remove inner element
+		let data_content = db.content.replace(/<\/?a(?:(?= )[^>]*)?>/g,"");
+		str_file = await str_file.replace(/\$\{content\}/g,(match)=>{
+			return data_content;
+		});
+		
+		//--- inject data description --------
+		let data_description = await innertext(data_content);
+		data_description = data_description.replace(/\"/g,"");
+		let split_description = "";
+		for(let i=0;i<data_description.length;i++) {
+		    if(i<200){
+		    	if(data_description[i]!=undefined){
+		    		split_description+=data_description[i];
+		    	}else{
+		    		break;
+		    	};
+		    };
+		    if(i>=200){
+		    	break;
+		    };
+		};
+		str_file = await str_file.replace(/\$\{description\}/g,split_description+"...");
+		
 		await res.writeHead(200,{
 			"content-encoding": "gzip",
 			"content-type":"text/html; charset=utf-8"

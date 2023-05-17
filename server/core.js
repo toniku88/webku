@@ -9,6 +9,8 @@ const app = express();
 app.use( async (req,res,next)=>{
   res.end(req.url);
 });
-app.listen(80, () => console.log('app listening on port 80!'));
-// export default app;
-export default serverless(app);
+
+export default {
+  "app":app,
+  "handler":serverless(app)
+};

@@ -263,6 +263,105 @@ app.use( async (req,res,next)=>{
 	<script src="https://cdn.maskoding.id/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
 </html>`;
+		
+		let navigation = `<nav class="navbar navbar-expand-lg navbar-light bg-light border border-secondary-subtle">
+  <div class="container-fluid">
+    <a class="navbar-brand title-headers animate__animated animate__shakeX" href="/"><i class="bi bi-calculator d-inline-block mr-1"></i>`+`$`+`{title-home}</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#about" id="about">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#contact" id="contact">Contact</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#privacy-policy" id="privacy-policy">Privacy Policy</a>
+        </li>
+      </ul>
+      <form class="d-flex  mt-1 mr-1">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+      <button type="button" class="btn btn-primary mt-1" data-bs-toggle="modal" data-bs-target="#exampleModal">Login</button>
+    </div>
+  </div>
+</nav>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">LOGIN</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="input-group flex-nowrap mb-3">
+			  <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping">
+			</div>
+			<div class="input-group flex-nowrap mb-3">
+			  <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="addon-wrapping">
+			</div>
+			<div class="col-12">
+				<button class="btn btn-primary">Sign up</button>
+			    <button class="btn btn-success">Sign in</button>
+			  </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button aria-label="Kembali ke atas" id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'});"><i class="bi bi-arrow-up"></i></button>
+<script src="https://cdn.maskoding.id/bootstrap/dist/js/bootstrap.min.js"></script>
+<script>
+  const createModal = (data)=>{
+    const btn_privacy_policy = document.getElementById(data.id);
+    btn_privacy_policy.addEventListener("click",()=>{
+      const el_modal = document.createElement("div");
+      el_modal.setAttribute("class","modal");
+      el_modal.innerHTML = '<div class="modal-dialog modal-xl modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h1 class="modal-title">'+data.title+'</h1><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body" id="data-'+data.id+'"></div></div></div>';
+      el_modal.addEventListener("hidden.bs.modal",()=>{
+        el_modal.remove();
+      });
+      el_modal.addEventListener("shown.bs.modal",()=>{
+        const id_dom = document.getElementById("data-"+data.id);
+        id_dom.innerHTML = "Please Wait...";
+        fetch(data["data-dom"])
+        .then(response => response.text())
+        .then(function (data) {
+          id_dom.innerHTML = data;
+        });
+      });
+      let modalPrivacyPolicy = new bootstrap.Modal(el_modal, {
+        keyboard: false
+      });
+      modalPrivacyPolicy.toggle();
+    });
+  };
+  createModal({
+    "title":"Privacy Policy",
+    "id":"privacy-policy",
+    "data-dom":"./page/privacy-policy.html"
+  });
+  createModal({
+    "title":"About",
+    "id":"about",
+    "data-dom":"./page/about.html"
+  });
+  createModal({
+    "title":"Kontak",
+    "id":"contact",
+    "data-dom":"./page/contact.html"
+  });
+  </script>`;
+		  
+		str_file = await str_file.replace(/\$\{navigation\}/g,navigation);
+		  
 		//--- inject data lang --------
 		let data_lang = "en";
 		if(process.env["lang"]){

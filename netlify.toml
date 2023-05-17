@@ -7,6 +7,6 @@
 
 [[redirects]]
   from = "/tugas/*"
-  to = "/.netlify/functions/core/:splat"
+  to = "/.netlify/functions/content/:splat"
   status = 200
   force = true

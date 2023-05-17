@@ -262,6 +262,12 @@ app.use( async (req,res,next)=>{
 	<script src="https://cdn.maskoding.id/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
 </html>`;
+		//--- inject data lang --------
+		let data_lang = "en";
+		if(process.env["lang"]){
+			data_lang = process.env["lang"];
+		};
+		str_file = await str_file.replace(/\$\{lang\}/g,data_lang);
 		  
 		//--- inject data title --------
 		const data_title = db.title;

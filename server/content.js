@@ -12,7 +12,7 @@ let str_file = `<!DOCTYPE html>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link href="`+`$`+`{protocol}://`+`$`+`{domain}/favicon.ico" rel="shortcut icon" type="image/x-icon">
-	<title>${title}</title>
+	<title>`+`$`+`{title}</title>
 	<meta name="twitter:card" content="summary"/>
 	<meta name="twitter:domain" content="`+`$`+`{domain}"/>
 	<meta name="twitter:title" property="og:title" itemprop="name" content="`+`$`+`{title}"/>

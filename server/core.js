@@ -10,7 +10,5 @@ app.use( async (req,res,next)=>{
   res.end(req.url);
 });
 
-export default {
-  "app":app,
-  "handler":serverless(app)
-};
+export default app;
+export const handler = serverless(app);

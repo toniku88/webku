@@ -9,7 +9,7 @@
   "keywords": [],
   "author": "abdi syahputra harahap",
   "license": "ISC",
-  "type": "module",
+  "type": "commonjs",
   "dependencies": {
     "express": "^4.18.2",
     "node-gzip": "^1.1.2",

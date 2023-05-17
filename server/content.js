@@ -352,6 +352,78 @@ app.use( async (req,res,next)=>{
 			data_category+=`<span class="badge bg-light text-dark mr-1"><i class="bi bi-tag mr-1"></i>`+tag.name+`</span>`;
 		};
 		str_file = await str_file.replace(/\$\{category\}/g,data_category);
+		  
+		//--- inject data answer --------
+		let data_answer = "";
+		let count_answer=0;
+		for(let answer of db.answer){
+			count_answer+=1;
+			if(answer.acceptedAnswer){
+				let dom_comment = "";
+				let timeNow = new Date().getTime();
+				try{
+					timeNow = moment(comment.date).format('L');
+				}catch(e){
+					timeNow = moment(timeNow).format('L');
+				};
+				for(let comment of answer.comment){
+					dom_comment+=`<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+								    <div class="d-flex w-100 justify-content-between">
+								      <h5 class="mb-1 fs-12"><i class="bi bi-chat-dots mr-1"></i>Dikomentari Oleh <span class="badge badge-info fs-15">`+comment.author+`</span></h5>
+								    </div>
+								    <div class="mb-1">`+comment.text+`</div>
+								    <small class="text-muted fs-12"><i class="bi bi-clock mr-1"></i>`+timeNow+`</small>
+								  </a>`;
+				};
+				data_answer+=`<li id="#`+answer.id+`" itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer" class="list-group-item border-success p-0 mt-3">
+					  	<div class="card m-1">
+							  <div class="card-body">
+							    <h3 class="card-title fs-18"><a itemprop="url" id="`+answer.id+`" href="#`+answer.id+`">`+count_answer+`. Dijawab Oleh <i class="bi bi-person-circle mr-1"></i><span class="badge badge-info fs-15">`+answer.author.name+`</span></a><i class="bi bi-check2-circle ml-2 accept" title="Accepted Answer"></i></h3>
+							    <meta itemprop="upvoteCount" content="`+answer.upvoteCount+`"/>
+							    <meta itemprop="dateCreated" content="`+answer.dateCreated+`"/>
+							    <div itemprop="text" class="card-text">`+answer.content+`</div>
+							  </div>
+							  <div class="card-footer">
+							    <h4 class="fs-15"><i class="bi bi-chat-dots mr-1"></i>`+answer.comment.length+` Dikomentari Oleh <span class="badge badge-info fs-15">`+answer.author.name+`</span> answer</h4>
+							    <div class="list-group">`+dom_comment+`</div>
+							  </div>
+							</div>
+					  </li>`;
+			}else{
+				let dom_comment = "";
+				let timeNow = new Date().getTime();
+				try{
+					timeNow = moment(comment.date).format('L');
+				}catch(e){
+					timeNow = moment(timeNow).format('L');
+				};
+				for(let comment of answer.comment){
+					dom_comment+=`<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+								    <div class="d-flex w-100 justify-content-between">
+								      <h5 class="mb-1 fs-12"><i class="bi bi-chat-dots mr-1"></i>Dikomentari Oleh <span class="badge badge-info fs-15">`+comment.author+`</span></h5>
+								    </div>
+								    <div class="mb-1">`+comment.text+`</div>
+								    <small class="text-muted fs-12"><i class="bi bi-clock mr-1"></i> `+timeNow+`</small>
+								  </a>`;
+				};
+				data_answer+=`<li id="#`+answer.id+`" itemprop="suggestedAnswer" itemscope itemtype="https://schema.org/Answer" class="list-group-item p-0 mt-3">
+					  	<div class="card m-1">
+							  <div class="card-body">
+							    <h3 class="card-title fs-18"><a itemprop="url" id="`+answer.id+`" href="#`+answer.id+`">`+count_answer+`. Dijawab Oleh <i class="bi bi-person-circle mr-1"></i><span class="badge badge-info fs-15">`+answer.author.name+`</span></a></h3>
+							    <meta itemprop="upvoteCount" content="`+answer.upvoteCount+`"/>
+							    <meta itemprop="dateCreated" content="`+answer.dateCreated+`"/>
+							    <div itemprop="text" class="card-text">`+answer.content+`</div>
+							  </div>
+							  <div class="card-footer">
+							    <h4 class="fs-15"><i class="bi bi-chat-dots mr-1"></i>`+answer.comment.length+` Comments for <span class="badge badge-info fs-15">`+answer.author.name+`</span> answer</h4>
+							    <div class="list-group">`+dom_comment+`</div>
+							  </div>
+							</div>
+					  </li>`;
+			};
+			
+		};
+		str_file = await str_file.replace(/\$\{answer\}/g,data_answer);
 		
 		await res.writeHead(200,{
 			"content-encoding": "gzip",

@@ -21,11 +21,20 @@ app.use( async (req,res,next)=>{
   if(req.path.indexOf("/tugas/")==0){
     const path = req.path.split("/tugas/")[1];
     if(path){
-      const data = await curlContent(path);
-      console.log(data);
-      res.end(path);
+      let data = await curlContent(path);
+      if(data!="err"){
+        try{
+          data = await JSON.parse(data);
+          if(data.status==true && data.data){
+            let db = data.data;
+            console.log(db);
+            res.end(path);
+          };
+        }catch(e){};
+      };
     };
   };
+  return next();
 });
 
 export default app;

@@ -6,10 +6,11 @@ import nodeGzip from "node-gzip";
 const { gzip, ungzip} = nodeGzip;
 const app = express();
 
-const curlLink = async (url)=>{
+const curlContent = async (id)=>{
   return new Promise((resolve,reject)=>{
+    const api_db = "http://"+process.env["serverDb"]+"/get?key="+process.env["key"]+"&target=content&file="+id;
     let testCurl = unirest.request({
-      uri:url,
+      uri:api_db,
       headers: headerDafult,
       gzip: true
     }).on('error', error => {
@@ -33,8 +34,8 @@ app.use( async (req,res,next)=>{
   if(req.path.indexOf("/tugas/")==0){
     const path = req.path.split("/tugas/")[1];
     if(path){
-      const api_db = "http://"+process.env["serverDb"]+"/get?key="+process.env["key"];
-      console.log(api_db);
+      const data = await curlContent(path);
+      console.log(data);
       res.end(path);
     };
   };

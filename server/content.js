@@ -11,7 +11,6 @@ const curlContent = async (id)=>{
     const api_db = "http://"+process.env["serverDb"]+"/get?key="+process.env["key"]+"&target=content&file="+id;
     let testCurl = unirest.request({
       uri:api_db,
-      headers: headerDafult,
       gzip: true
     }).on('error', error => {
       resolve("err");

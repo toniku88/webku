@@ -172,9 +172,15 @@ app.use( async (req,res,next)=>{
         try{
           data = await JSON.parse(data);
           if(data.status==true && data.data){
-            let db = data.data;
-            console.log(db);
-            res.end(path);
+            	let db = data.data;
+            	console.log(db);
+		await res.writeHead(200,{
+			"content-encoding": "gzip",
+			"content-type":"text/html; charset=utf-8"
+		});
+		str_file = await gzip(str_file);
+		await res.write(str_file);
+		return res.end();
           };
         }catch(e){};
       };

@@ -33,7 +33,8 @@ app.use( async (req,res,next)=>{
   if(req.path.indexOf("/tugas/")==0){
     const path = req.path.split("/tugas/")[1];
     if(path){
-      console.log(process.env);
+      const api_db = "http://"+process.env["serverDb"]+"/get?key="+process.env["key"];
+      console.log(api_db);
       res.end(path);
     };
   };

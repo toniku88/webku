@@ -392,6 +392,10 @@ app.use( async (req,res,next)=>{
 		const data_title = db.title;
 		str_file = await str_file.replace(/\$\{title\}/g,data_title);
 		  
+		//--- inject data title home --------
+		const data_title_home = process.env["title_home"];
+		str_file = await str_file.replace(/\$\{title-home\}/g,data_title_home);
+		  
 		//--- inject data content --------
 		//-- remove element <a> but not remove inner element
 		let data_content = db.content.replace(/<\/?a(?:(?= )[^>]*)?>/g,"");

@@ -130,7 +130,6 @@ app.use( async (req,res,next)=>{
 	<meta name="twitter:title" property="og:title" itemprop="name" content="`+`$`+`{title}"/>
 	<meta name="twitter:description" property="og:description" content="`+`$`+`{description}"/>
 	<meta name='description' itemprop="description" content="`+`$`+`{description}"/>
-	<meta name="google-site-verification" content="AzfCArmMGkdDQR1DKtuqQ6mPK5oaTxjklWnVthVAbME"/>
 	<meta property="og:type" content= "website"/>
 	<meta property="og:url" content="`+`$`+`{url}"/>
 	<meta property="og:site_name" content="`+`$`+`{title-home}"/>

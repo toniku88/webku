@@ -7,7 +7,117 @@ const { gzip, ungzip} = nodeGzip;
 import innertext from 'innertext';
 const app = express();
 
-let str_file = `<!DOCTYPE html>
+const curlContent = async (id)=>{
+  return new Promise((resolve)=>{
+    const api_db = "http://"+process.env["serverDb"]+"/get?key="+process.env["key"]+"&target=content&file="+id;
+    unirest.get(api_db).then((response) => {
+      resolve(response.body);
+    }).catch((e)=>{
+       resolve("err");
+    });
+  });
+};
+
+const convertDb = async (data)=>{
+	let data_back = {
+		"title":null,
+		"id": null,
+	    "permalink": null,
+	    "dateCreated": null,
+	    "upvoteCount": null,
+	    "content":null,
+	    "attachments":[],
+	    "author": {
+	        "name": "Anonyme",
+	        "avatar": null
+	    },
+	    "tag":[],
+	    "comment":[],
+	    "answer":[]
+	};
+	const title = await innertext(data.content);
+	let text="";
+	for(let i=0;i<=160;i++){
+		if(title[i]!=undefined){
+			text+=title[i];
+		};
+	};
+	data_back.title = text+"...";
+	data_back.id = data.databaseId;
+	data_back.permalink = data.databaseId;
+	data_back.dateCreated = data.created;
+	data_back.content = data.content;
+	data_back.attachments = data.attachments;
+
+	if(data.author && data.author.nick){
+		data_back.author.name = data.author.nick;
+	};
+
+	if(data.author && data.author.avatar && data.author.avatar.thumbnailUrl){
+		data_back.author.avatar = data.author.avatar.thumbnailUrl;
+	};
+
+	let tag_name = "Anonyme";
+	let tag_slug = "anonyme";
+	if(data.subject && data.subject.name){
+		tag_name = data.subject.name;
+	};
+	if(data.subject && data.subject.slug){
+		tag_slug = data.subject.slug;
+	};
+	data_back.tag.push({
+		"name":tag_name,
+		"alt":tag_slug
+	});
+
+	if(data.answers && data.answers.nodes){
+		data_back.upvoteCount = data.answers.nodes.length;
+		for(let answer of data.answers.nodes){
+			let format_answer = {
+				"author":{
+			        "name": "Anonyme",
+			        "avatar": null
+			    },
+			    "content":null,
+				"upvoteCount":null,
+				"dateCreated":null,
+				"comment":[],
+				"id": null,
+		        "acceptedAnswer": false,
+		        "suggestedAnswer": true
+			};
+			format_answer.content = answer.content;
+			format_answer.dateCreated = answer.created;
+			format_answer.permalink = answer.databaseId;
+			format_answer.id = answer.databaseId;
+			format_answer.upvoteCount = answer.content.length;
+			if(answer.author && answer.author.nick){
+				format_answer.author.name = answer.author.nick;
+			};
+
+			if(answer.author && answer.author.avatar && answer.author.avatar.thumbnailUrl){
+				format_answer.author.avatar = answer.author.avatar.thumbnailUrl;
+			};
+			data_back.answer.push(format_answer);
+		};
+	};
+	return data_back;
+};
+
+app.use( async (req,res,next)=>{
+  if(req.path.indexOf("/tugas/")==0){
+    const path = req.path.split("/tugas/")[1];
+    if(path){
+      let data = await curlContent(path);
+      if(data!="err"){
+        try{
+          data = await JSON.parse(data);
+          if(data.status==true && data.data){
+            	let db = data.data;
+		db = await convertDb(db);
+            	console.log(db);
+		  
+		let str_file = `<!DOCTYPE html>
 <html itemscope itemtype="https://schema.org/QAPage" lang="`+`$`+`{lang}">
 <head>
 	<meta charset="utf-8">
@@ -152,116 +262,6 @@ let str_file = `<!DOCTYPE html>
 	<script src="https://cdn.maskoding.id/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
 </html>`;
-
-const curlContent = async (id)=>{
-  return new Promise((resolve)=>{
-    const api_db = "http://"+process.env["serverDb"]+"/get?key="+process.env["key"]+"&target=content&file="+id;
-    unirest.get(api_db).then((response) => {
-      resolve(response.body);
-    }).catch((e)=>{
-       resolve("err");
-    });
-  });
-};
-
-const convertDb = async (data)=>{
-	let data_back = {
-		"title":null,
-		"id": null,
-	    "permalink": null,
-	    "dateCreated": null,
-	    "upvoteCount": null,
-	    "content":null,
-	    "attachments":[],
-	    "author": {
-	        "name": "Anonyme",
-	        "avatar": null
-	    },
-	    "tag":[],
-	    "comment":[],
-	    "answer":[]
-	};
-	const title = await innertext(data.content);
-	let text="";
-	for(let i=0;i<=160;i++){
-		if(title[i]!=undefined){
-			text+=title[i];
-		};
-	};
-	data_back.title = text+"...";
-	data_back.id = data.databaseId;
-	data_back.permalink = data.databaseId;
-	data_back.dateCreated = data.created;
-	data_back.content = data.content;
-	data_back.attachments = data.attachments;
-
-	if(data.author && data.author.nick){
-		data_back.author.name = data.author.nick;
-	};
-
-	if(data.author && data.author.avatar && data.author.avatar.thumbnailUrl){
-		data_back.author.avatar = data.author.avatar.thumbnailUrl;
-	};
-
-	let tag_name = "Anonyme";
-	let tag_slug = "anonyme";
-	if(data.subject && data.subject.name){
-		tag_name = data.subject.name;
-	};
-	if(data.subject && data.subject.slug){
-		tag_slug = data.subject.slug;
-	};
-	data_back.tag.push({
-		"name":tag_name,
-		"alt":tag_slug
-	});
-
-	if(data.answers && data.answers.nodes){
-		data_back.upvoteCount = data.answers.nodes.length;
-		for(let answer of data.answers.nodes){
-			let format_answer = {
-				"author":{
-			        "name": "Anonyme",
-			        "avatar": null
-			    },
-			    "content":null,
-				"upvoteCount":null,
-				"dateCreated":null,
-				"comment":[],
-				"id": null,
-		        "acceptedAnswer": false,
-		        "suggestedAnswer": true
-			};
-			format_answer.content = answer.content;
-			format_answer.dateCreated = answer.created;
-			format_answer.permalink = answer.databaseId;
-			format_answer.id = answer.databaseId;
-			format_answer.upvoteCount = answer.content.length;
-			if(answer.author && answer.author.nick){
-				format_answer.author.name = answer.author.nick;
-			};
-
-			if(answer.author && answer.author.avatar && answer.author.avatar.thumbnailUrl){
-				format_answer.author.avatar = answer.author.avatar.thumbnailUrl;
-			};
-			data_back.answer.push(format_answer);
-		};
-	};
-	return data_back;
-};
-
-app.use( async (req,res,next)=>{
-  if(req.path.indexOf("/tugas/")==0){
-    const path = req.path.split("/tugas/")[1];
-    if(path){
-      let data = await curlContent(path);
-      if(data!="err"){
-        try{
-          data = await JSON.parse(data);
-          if(data.status==true && data.data){
-            	let db = data.data;
-		db = await convertDb(db);
-            	console.log(db);
 		  
 		//--- inject data title --------
 		const data_title = db.title;

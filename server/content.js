@@ -370,6 +370,18 @@ app.use( async (req,res,next)=>{
 		
 		str_file = await str_file.replace(/\$\{footer\}/g,footer);
 		  
+		//--- inject data protocol --------
+		const data_protocol = "https";
+		str_file = await str_file.replace(/\$\{protocol\}/g,data_protocol);
+		  
+		//--- inject data domain --------
+		const data_domain = req.headers.host;
+		str_file = await str_file.replace(/\$\{domain\}/g,data_domain);
+		  
+		//--- inject data url --------
+		const data_url = data_protocol+"://"+req.headers.host+req.path;
+		str_file = await str_file.replace(/\$\{url\}/g,data_url);
+		  
 		//--- inject data lang --------
 		let data_lang = "en";
 		if(process.env["lang"]){

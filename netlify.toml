@@ -10,3 +10,9 @@
   to = "/.netlify/functions/content/:splat"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/"
+  to = "/.netlify/functions/home/:splat"
+  status = 200
+  force = true

@@ -3,10 +3,10 @@
   functions = "functions"
 
 [functions]
-  included_files = ["server/*","core/*","folder-static/*","*"]
+  included_files = ["folder-static/*","*"]
 
 [[redirects]]
-  from = "/*"
+  from = "/tugas/*"
   to = "/.netlify/functions/core/:splat"
   status = 200
   force = true
